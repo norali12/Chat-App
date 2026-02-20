@@ -14,18 +14,18 @@ export const protectedRoute = async (req, res, next)=>{
     //verify the token
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
     if(!decodedToken){
-      return res.status(401).json({error: "Unauthorized - Invalid token"})  //when this will happen ??
+      return res.status(401).json({error: "Unauthorized - Invalid token"})  
     }
 
     //find the user by id
     const user = await User.findById(decodedToken.userId).select("-password")   //select every thing except the password
     
     if(!user){
-      return res.status(401).json({error: "Unauthorized - User not found"})  //when this will happen ??
+      return res.status(401).json({error: "Unauthorized - User not found"})  
     }
 
-    //attach the user to the request
-    req.user = user //why ??
+    //add the user to the request
+    req.user = user 
     next()
     
   }catch(error){

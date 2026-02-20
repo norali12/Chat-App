@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs"
 import User from "../models/user.model.js"
 import { generateToken } from "../lib/utils.js"
+import cloudinary from "../lib/cloudinary.js"
 
 export const signup = async (req, res) => {
 
@@ -124,7 +125,23 @@ export const updateProfile = async (req, res)=>{
       //   email: user.email,
       //   profilePic: user.profilePic,
       //   message: "User profile updated successfully"})
-     
+
+      const { profilePic }= req.body;
+      const userId = req.user._id;
+
+      if(!profilePic){
+        return res.status(400).json({error: "Please provide the profile picture"})
+      }
+
+      const uploadedResponse = await cloudinary.uploader.upload(profilePic)
+
+      const updatedUser = await User.findByIdAndUpdate(userId, {profilePic: uploadedResponse.secure_url}, {new: true})
+      res.status(200).json({
+        _id: updatedUser._id,
+        fullName: updatedUser.fullName,
+        email: updatedUser.email,
+        profilePic: updatedUser.profilePic,
+        message: "User profile picture updated successfully"})
     
   }catch(error){
     console.log("Error in updateProfile function",error.message)
