@@ -1,5 +1,5 @@
 import express from "express";
-import {signup, login, logout, updateProfile} from "../controllers/auth.controller.js";
+import {signup, login, logout, updateProfile, checkAuth} from "../controllers/auth.controller.js";
 import {protectedRoute} from "../middlewares/auth.middleware.js";
 const router = express.Router();
 
@@ -9,7 +9,11 @@ router.post("/login", login)
 
 router.post("/logout", logout)
 
-router.put("/updateProfile", protectedRoute ,updateProfile)
+router.put("/updateProfile", protectedRoute ,updateProfile)  // updateProfile is a Route Handler
+
+router.get("/check", protectedRoute, checkAuth)
+
+
 
 
 
